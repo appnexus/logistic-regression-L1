@@ -3,7 +3,7 @@ Convergence tests
 """
 
 import numpy as np
-from logistic_regression_l1 import LogisticRegressionL1
+from logistic_regression_L1 import LogisticRegressionL1
 
 def prob(X, betas):
     """
@@ -63,3 +63,8 @@ lambda_grid = np.exp(-1*np.linspace(1,17,200))
 logitfitL1.fit(matrix, lambda_grid)
 
 np.testing.assert_almost_equal(np.array(betas), logitfitL1.coef_, 2)
+obs = matrix[:, :-2]
+
+# Run test for prediction function
+predictions = np.divide(matrix[:, -1], matrix[:, -2])
+np.testing.assert_almost_equal(logitfitL1.predict(obs), predictions, 2)
