@@ -7,8 +7,6 @@ inputs and data that lives in a PySpark RDD.
 This method is formulated as the minimization of the convex function f.
 We can write this as the optimization problem like so:
 ![Min Eqn](/images/logit_min.gif)
-$$\underset{\beta}{\text{min}} -log \prod\limits_{
-}^i\binom{m_i}{y_i}p_i^{y_i}(1-p_i)^{m_i-y_i} + \lambda||\beta||_1$$
 
 The ith index denotes a set of observations with the same x_i, but with
 m_i occurrences of this observation, and y_i trials that result in a "success."
