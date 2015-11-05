@@ -1,6 +1,5 @@
 """
 Logistic Regression with L1 Penalty (Lasso)
-Author: Stephanie Tzeng
 """
 
 import numpy as np
