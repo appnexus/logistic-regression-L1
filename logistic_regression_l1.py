@@ -322,7 +322,7 @@ class LogisticRegressionL1():
 
         else:
             if not type(matrix.first()) == numpy.array:
-                matrix = to_np_array(matrix)
+                matrix = matrix.mapPartitions(to_np_array).cache()
 
             matrix = matrix.map(lambda x: np.insert(x, 0, 1., axis=1) * 1.)
             total_trials = matrix.map(lambda x:
