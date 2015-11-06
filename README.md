@@ -1,23 +1,32 @@
-## Logistic Regression with L1 Penalty
+Logistic Regression with L1 Penalty
+======================================
 This class implements L1 (Lasso) regularization using coordinate
 descent to achieve sparse solutions. It allows for both in-memory
 inputs and data that lives in a PySpark RDD.
 
 ### Mathematical Formulation
-This method is formulated as the minimization of the convex function f.
+This method is formulated as the minimization of the concave function f.
 We can write this as the optimization problem like so:
-![Min Eqn](/images/logit_min.gif)
+![Max Eqn] (./images/logit_max.gif)
 
 The ith index denotes a set of observations with the same x_i, but with
 m_i occurrences of this observation, and y_i trials that result in a "success."
 The objective is to find the optimal beta cofficients to miminize the
 negative log likelihood.
 
+The technique that is utilized is described in section 3 of ["Regularization Paths for Generalized Linear Models via Coordinate Descent"](http://web.stanford.edu/~hastie/Papers/glmnet.pdf).
 
-## Installation
+For an explanation of how this implementation solves the
+non-differentiable objective function from the L1 penalty term,
+refer to Chapter 13 of _Machine Learning: A Probabilistic
+Perspective_ (Murphy, 2012).
+
+Installation
+---------------
 ??
 
-## Usage and Example
+Usage and Example
+-----------------
 The primary input will be a matrix. If you do not need to use PySpark,
 then pass the data in as a numpy array. If pyspark=True, then the
 input must be an RDD.
@@ -75,7 +84,8 @@ logit_pyspark.fit(sparkrdd, lambda_grid, .00000001, True)
 logit_pyspark.predict(sparkrdd_new_obs, True)
 ```
 
-## Regularization Path
+Regularization Path
+-------------------
 If you want to use the benefit of the Lasso regularization, then the
 output of the `fit` method will return the entire regularization path,
 each row corresponding to the lambda parameter that you choose.
