@@ -1,5 +1,5 @@
 """
-Convergence tests
+Convergence tests, without spark
 """
 
 import numpy as np

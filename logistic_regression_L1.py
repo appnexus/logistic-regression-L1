@@ -326,7 +326,7 @@ class LogisticRegressionL1():
             num_feat = matrix.shape[1] - 2 # num_feat includes bias
 
         else:
-            if not type(matrix.first()) == numpy.ndarray:
+            if not isinstance(matrix.take(1), np.ndarray):
                 matrix = matrix.mapPartitions(to_np_array).cache()
 
             matrix = matrix.map(lambda x: np.insert(x, 0, 1., axis=1) * 1.)
