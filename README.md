@@ -13,6 +13,7 @@ We can write this as the optimization problem like so:
 ![Max Eqn] (./images/logit_max.gif)
 
 where the probabilities are defined by the logistic function:
+
 ![Prob Eqn] (./images/logit_prob.gif)
 
 The ith index denotes a set of observations with the same x_i, but with
@@ -106,6 +107,6 @@ algorithm utilizes a second-order Taylor approximation.
 
 If you plot the coefficients against the sum of coefficients in each iteration,
 the result will be something like this:
-![Logistic Path] (./images/logit_path.png)
+![Logistic Path] (./images/logit_path.png =450x)
 
 The most important features will appear in the most constrained iterations.
