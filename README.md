@@ -1,17 +1,23 @@
 Logistic Regression with L1 Penalty
 ======================================
-This class implements L1 (Lasso) regularization using coordinate
-descent to achieve sparse solutions. It allows for both in-memory
-inputs and data that lives in a PySpark RDD.
+This class implements L1 (Lasso) regularization on Logistic Regression
+using coordinate descent to achieve sparse solutions.
+It allows for both in-memory inputs and data that lives in a PySpark RDD.
+This implementation is meant to be used for large datasets. For small datasets,
+scikit-learn is sufficient.
+
 
 ### Mathematical Formulation
 This method is formulated as the minimization of the concave function f.
 We can write this as the optimization problem like so:
 ![Max Eqn] (./images/logit_max.gif)
 
+where the probabilities are defined by the logistic function:
+![Prob Eqn] (./images/logit_prob.gif)
+
 The ith index denotes a set of observations with the same x_i, but with
 m_i occurrences of this observation, and y_i trials that result in a "success."
-The objective is to find the optimal beta cofficients to miminize the
+The objective is to find the optimal beta cofficients to minimize the
 negative log likelihood.
 
 The technique that is utilized is described in section 3 of ["Regularization Paths for Generalized Linear Models via Coordinate Descent"](http://web.stanford.edu/~hastie/Papers/glmnet.pdf).
@@ -23,7 +29,11 @@ Perspective_ (Murphy, 2012).
 
 Installation
 ---------------
-??
+Download the script `logistic_regression_L1.py`.
+You just need to have this file in the same directory that you are running your code.
+Alternatively, add the directory location of this file into your Python path in `.bash_profile`:
+`export PYTHONPATH=$DIR:$PYTHONPATH` where `$DIR` is the location of this file.
+
 
 Usage and Example
 -----------------
@@ -38,8 +48,8 @@ this, where each variable listed is an array:
 [ x1, x2, ... , num_occurrences_of_row, num_successes ]
 ```
 
-If each row is unweighted, then the second to last column will be all
-zeros.
+If each row is unweighted, then the second to last column (num_occurrences_of_row)
+will be ones. The last column (num_successes) will then be zeros or ones.
 
 The `fit` method will automatically insert an intercept term and return
 coefficients that includes this bias.
@@ -93,3 +103,9 @@ each row corresponding to the lambda parameter that you choose.
 The lambda grid will control how you iterate through the L1
 penalty/constraint. Note that the step sizes should be small, as this
 algorithm utilizes a second-order Taylor approximation.
+
+If you plot the coefficients against the sum of coefficients in each iteration,
+the result will be something like this:
+![Logistic Path] (./images/logit_path.png)
+
+The most important features will appear in the most constrained iterations.
