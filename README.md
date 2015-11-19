@@ -107,6 +107,6 @@ algorithm utilizes a second-order Taylor approximation.
 
 If you plot the coefficients against the sum of coefficients in each iteration,
 the result will be something like this:
-![Logistic Path] (./images/logit_path.png =450x)
+![Logistic Path] (./images/logit_path.png)
 
 The most important features will appear in the most constrained iterations.
