@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
 
-set -x
+FWDIR="$(cd "`dirname $0`"; pwd)"
+cd "$FWDIR"
 
+set -x
 if [ -z "$SPARK_HOME" ]; then
    echo "$(tput setaf 1)Error: SPARK_HOME is not set, may not be able to run tests.$(tput sgr0)"
 fi
-
-PYTHON_PATH=./ nosetests \
+PYTHON_PATH=./ nosetests tests \
     --logging-level=INFO \
     --detailed-errors \
-    --verbosity=2 \
+    --verbosity=5 \
     --with-coverage \
     --cover-branches \
     --cover-xml \
     --cover-html \
     --cover-html-dir=./htmlcov \
-    --cover-package=sparktestingbase \
+    --cover-package=logistic_regression_L1 \
     --traverse-namespace

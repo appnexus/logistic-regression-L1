@@ -2,13 +2,14 @@
 Convergence tests, with spark
 """
 
+import unittest2
 import numpy as np
 from logistic_regression_L1 import LogisticRegressionL1
 from pyspark import SparkContext
 from pyspark import SparkConf
 
-conf = SparkConf().setMaster("yarn-client")
-sc = SparkContext(conf=conf)
+sc = SparkContext("local[4]")
+
 
 def prob(X, betas):
     """
@@ -28,6 +29,7 @@ def prob(X, betas):
     power = X.dot(betas)
 
     return np.exp(power) / (1 + np.exp(power))
+
 
 def create_random_observations(num_obs, num_feat, betas):
     """
@@ -59,37 +61,68 @@ def create_random_observations(num_obs, num_feat, betas):
 
     return matrix
 
-# Run test for 2 features, 100 observations
-betas = [5., 0.3, 1.]
 
-logitfitL1 = LogisticRegressionL1()
-matrix = create_random_observations(100, 2, betas)
-lambda_grid = np.exp(-1*np.linspace(1,17,200))
+class LogisticRegressionL1TestCase(unittest2.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        class_name = cls.__name__
+        cls.sc = SparkContext(cls.getMaster(), appName=class_name)
 
-## pySpark tests
-# Check convergence and fit
-matrix_RDD = sc.parallelize(matrix)
-logitfitL1.fit(matrix_RDD, lambda_grid, pyspark=True)
-np.testing.assert_almost_equal(np.array(betas), logitfitL1.coef_, 2)
+    @classmethod
+    def tearDownClass(cls):
+        cls.sc.stop()
+        # To avoid Akka rebinding to the same port, since it doesn't unbind
+        # immediately on shutdown
+        cls.sc._jvm.System.clearProperty("spark.driver.port")
 
-# Test predict function
-obs = matrix[:, :-2]
-predictions = np.divide(matrix[:, -1], matrix[:, -2])
-np.testing.assert_almost_equal(logitfitL1.predict(obs), predictions, 2)
+    def setUp(self):
+        super(LogisticRegressionL1TestCase, self).setUp()
+        self.logitfitL1 = LogisticRegressionL1()
+        self.lambda_grid = np.exp(-1*np.linspace(1, 17, 200))
 
-# Test lists of lists as input
-matrix_RDD_lol = sc.parallelize([list(i) for i in matrix])
-logitfitL1.fit(matrix_RDD_lol, lambda_grid, pyspark=True)
-np.testing.assert_almost_equal(np.array(betas), logitfitL1.coef_, 2)
+    def test_convergence(self):
+        # Check convergence and fit
 
-# Test list of np.arrays as input
-matrix_RDD_mol = sc.parallelize(list(matrix))
-logitfitL1.fit(matrix_RDD_mol, lambda_grid, pyspark=True)
-np.testing.assert_almost_equal(np.array(betas), logitfitL1.coef_, 2)
+        # Run test for 2 features, 100 observations
+        betas = [5., 0.3, 1.]
+        matrix = create_random_observations(100, 2, betas)
 
-# Test negative and zero betas
-betas = [.3, -8, 0, 1.]
-matrix = create_random_observations(100, 3, betas)
-matrix_RDD = sc.parallelize(matrix)
-logitfitL1.fit(matrix_RDD, lambda_grid, pyspark=True)
-np.testing.assert_almost_equal(np.array(betas), logitfitL1.coef_, 3)
+        matrix_RDD = sc.parallelize(matrix)
+        self.logitfitL1.fit(matrix_RDD, self.lambda_grid, pyspark=True)
+        np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
+
+    def test_prediction(self):
+        # Test predict function
+        betas = [5., 0.3, 1.]
+        matrix = create_random_observations(100, 2, betas)
+        obs = matrix[:, :-2]
+        predictions = np.divide(matrix[:, -1], matrix[:, -2])
+        np.testing.assert_almost_equal(self.logitfitL1.predict(obs), predictions, 2)
+
+    def test_user_inputs__list(self):
+        # Test lists of lists as input
+        betas = [5., 0.3, 1.]
+        matrix = create_random_observations(100, 2, betas)
+        matrix_RDD_lol = sc.parallelize([list(i) for i in matrix])
+        self.logitfitL1.fit(matrix_RDD_lol, self.lambda_grid, pyspark=True)
+        np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
+
+    def test_user_inputs__numpy(self):
+        # Test list of np.arrays as input
+        betas = [5., 0.3, 1.]
+        matrix = create_random_observations(100, 2, betas)
+        matrix_RDD_mol = sc.parallelize(list(matrix))
+        self.logitfitL1.fit(matrix_RDD_mol, self.lambda_grid, pyspark=True)
+        np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
+
+    def test_non_positive_betas(self):
+        # Test negative and zero betas
+        betas = [.3, -8, 0, 1.]
+        matrix = create_random_observations(100, 3, betas)
+        matrix_RDD = sc.parallelize(matrix)
+        self.logitfitL1.fit(matrix_RDD, self.lambda_grid, pyspark=True)
+        np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 3)
+
+
+if __name__ == "__main__":
+    unittest2.main()
