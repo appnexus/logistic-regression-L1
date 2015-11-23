@@ -34,7 +34,7 @@ Download the script `logistic_regression_L1.py`.
 You just need to have this file in the same directory that you are running your code.
 Alternatively, add the directory location of this file into your Python path in `.bash_profile`:
 `export PYTHONPATH=$DIR:$PYTHONPATH` where `$DIR` is the location of this file.
-
+**Note: this is using Python 2.7.**
 
 Usage and Example
 -----------------
