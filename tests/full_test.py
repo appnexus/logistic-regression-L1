@@ -91,7 +91,7 @@ def explode_matrix(data):
 
 class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
     def setUp(self):
-        super(LogisticRegressionL1TestCase, self).setUp()
+        super(LogisticRegressionL1NumPyTestCase, self).setUp()
         self.logitfitL1 = LogisticRegressionL1()
         self.lambda_grid = np.exp(-1*np.linspace(1, 17, 200))
 
