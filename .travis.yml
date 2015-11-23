@@ -1,11 +1,14 @@
 language: python
 python:
     - 2.7
+env:
+    - SPARK_HOME="/home/travis/spark-1.5.2-bin-hadoop2.6"
+    - PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH"
+    - PATH=/home/travis/miniconda2/bin:$PATH
 before_install:
     - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
     - ./miniconda.sh -b
-    - export PATH=/home/travis/miniconda2/bin:$PATH
     - conda update --yes conda
     - conda create --yes -n condaenv python=$TRAVIS_PYTHON_VERSION
     - conda install --yes -n condaenv pip
@@ -18,8 +21,6 @@ install:
     - conda install --yes scikit-learn
     - pip install coverage nose-cov
 script:
-    - export SPARK_HOME="$HOME/spark-1.5.2-bin-hadoop2.6"
-    - export PYTHONPATH="$SPARK_HOME/python:$PYTHONPATH"
     - ./run-tests
     - pep8 --ignore=E402 ./logistic_regression_L1
 after_success:
