@@ -4,7 +4,7 @@ python:
 env:
     - SPARK_HOME="/home/travis/spark-1.5.2-bin-hadoop2.6"
     - PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH"
-    - PATH=/home/travis/miniconda2/bin:$PATH
+    - PATH="/home/travis/miniconda2/bin:$PATH"
 before_install:
     - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
