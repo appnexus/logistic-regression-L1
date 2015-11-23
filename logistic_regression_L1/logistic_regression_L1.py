@@ -7,6 +7,7 @@ import math
 import copy
 import operator as op
 
+
 def list_add(x, y):
     """
     For adding elements of a list (of arrays) in PySpark.
@@ -14,6 +15,7 @@ def list_add(x, y):
     for i in xrange(len(x)):
         x[i] += y[i]
     return x
+
 
 def to_np_array(lol):
     """
@@ -35,6 +37,7 @@ def to_np_array(lol):
     for i in xrange(len(lines)):
         mfao[i] = np.array(lines[i])
     return [mfao]
+
 
 class LogisticRegressionL1():
 
@@ -105,7 +108,7 @@ class LogisticRegressionL1():
         new_weights = self.__calc_new_weights(matrix, old_betas)
 
         return X.dot(old_betas) + \
-                (y - weight * prob) / new_weights
+            (y - weight * prob) / new_weights
 
     def __calc_aj(self, matrix, new_weights, j):
         """
@@ -238,10 +241,11 @@ class LogisticRegressionL1():
             return 0
 
     def __calculate_optimal_betas(self, matrix, old_betas, lam,
-            total_trials, precision, pyspark):
+                                  total_trials, precision, pyspark):
         """
         For each lambda iteration, determine the converged betas.
-        It exits the loop once the pct change of betas is less than the precision.
+        It exits the loop once the pct change of betas is less than
+        the precision.
 
         Params
         -------
@@ -249,8 +253,8 @@ class LogisticRegressionL1():
         old_betas : array
         lam : float
         total_trials : float
-        precision : float, the amount of precision to use in iterating over betas
-            in coordinate descent algorithm
+        precision : float, the amount of precision to use in iterating
+            over betas in coordinate descent algorithm
         pyspark : boolean
 
         Returns
@@ -258,12 +262,13 @@ class LogisticRegressionL1():
         new_betas : array
         """
 
-        if pyspark == False:
+        if pyspark is False:
             a_c_values = self.__calc_a_c_array(matrix,
-                                            old_betas, total_trials)
+                                               old_betas, total_trials)
         else:
             a_c_values = matrix.map(lambda x:
-                self.__calc_a_c_array(x, old_betas, total_trials)).reduce(list_add)
+                                    self.__calc_a_c_array(x, old_betas,
+                                    total_trials)).reduce(list_add)
 
         a_array = a_c_values[0]
         c1 = a_c_values[1]
@@ -283,13 +288,13 @@ class LogisticRegressionL1():
                 break
             else:
                 beta_pct_diff = (max(np.abs(new_betas - old_betas)) * 1. /
-                                    np.sum(np.abs(new_betas)))
+                                 np.sum(np.abs(new_betas)))
             old_betas = copy.deepcopy(new_betas)
 
         return new_betas
 
-    def fit(self, matrix, lambda_grid=np.exp(-1*np.linspace(1,17,300)),
-            precision = .00000001, pyspark=False):
+    def fit(self, matrix, lambda_grid=np.exp(-1 * np.linspace(1, 17, 300)),
+            precision=.00000001, pyspark=False):
         """
         Calculate the full path of betas, given the data and lambdas
         over which to iterate.
@@ -299,7 +304,8 @@ class LogisticRegressionL1():
         Params
         ------
         matrix : numpy.array
-            or if pyspark=True, RDD whose partitions are lists of a numpy array.
+            or if pyspark=True, RDD whose partitions are lists of a
+            numpy array.
             If a list of lists are inputted for the partition, it will be
             converted into the list of a numpy array.
 
@@ -320,12 +326,12 @@ class LogisticRegressionL1():
                 Starts with largest penalty, or when lambda is largest.
                 Ends with unpenalized case (lambda is tiny)
         """
-        if pyspark == False:
+        if pyspark is False:
             # Add in bias
             matrix = np.insert(matrix, 0, 1., axis=1) * 1.
             total_trials = np.sum(matrix[:, -2]) * 1.
             total_successes = np.sum(matrix[:, -1]) * 1.
-            num_feat = matrix.shape[1] - 2 # num_feat includes bias
+            num_feat = matrix.shape[1] - 2  # num_feat includes bias
 
         else:
             if not isinstance(matrix.take(1), np.ndarray):
@@ -346,8 +352,8 @@ class LogisticRegressionL1():
 
         for i in xrange(len(lambda_grid)):
             beta_guess = self.__calculate_optimal_betas(matrix, beta_guess,
-                            lambda_grid[i], total_trials, precision,
-                            pyspark)
+                         lambda_grid[i], total_trials, precision,
+                         pyspark)
 
             beta_path[i, :] = beta_guess
 
@@ -372,8 +378,8 @@ class LogisticRegressionL1():
         -------
         C: array (if pyspark=False), shape [n_samples] of probabilities
             between 0, 1
-           if pyspark=True, returns RDD of original dataset with a new column of
-            predictions, like [ original_data, prediction ]
+           if pyspark is True, returns RDD of original dataset with a new
+            column of predictions, like [ original_data, prediction ]
         """
         if pyspark == False:
             # Add in bias
