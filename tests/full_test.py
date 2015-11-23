@@ -102,7 +102,7 @@ class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
         betas = [5., 0.3, 1.]
         matrix = create_random_observations(100, 2, betas)
 
-        path = self.logitfitL1.fit(matrix_RDD, self.lambda_grid)
+        path = self.logitfitL1.fit(matrix, self.lambda_grid)
         np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
 
     def test_prediction(self):
@@ -111,7 +111,7 @@ class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
         matrix = create_random_observations(100, 2, betas)
         obs = matrix[:, :-2]
 
-        path = self.logitfitL1.fit(matrix_RDD, self.lambda_grid)
+        path = self.logitfitL1.fit(matrix, self.lambda_grid)
         predictions = np.divide(matrix[:, -1], matrix[:, -2])
         np.testing.assert_almost_equal(self.logitfitL1.predict(obs), predictions, 2)
 
@@ -127,10 +127,10 @@ class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
         lib = LogisticRegression(fit_intercept=True)
         lib.fit(X, y)
 
-        path = logitfitL1.fit(new_matrix, lambda_grid)
+        path = self.logitfitL1.fit(new_matrix, self.lambda_grid)
 
         skbetas = np.append(lib.intercept_[0], lib.coef_)
-        np.testing.assert_almost_equal(skbetas, logitfitL1.coef_, 2)
+        np.testing.assert_almost_equal(skbetas, self.logitfitL1.coef_, 2)
 
     def test_regularization_path(self):
         # Check results using logistic path
@@ -138,7 +138,7 @@ class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
         num_feat = 5
 
         X, y = make_classification(n_samples=num_samples, n_features=num_feat, n_informative=3,
-                                       n_classes=2, random_state=0, weights=weight_list)
+                                       n_classes=2, random_state=0, weights=[0.5, 0.5])
         matrix = np.zeros((num_samples, num_feat + 2))
         matrix[:,:-2] = X
         matrix[:, -2] = np.ones(num_samples)
@@ -196,6 +196,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         # Test predict function
         betas = [5., 0.3, 1.]
         matrix = create_random_observations(100, 2, betas)
+        matrix_RDD = sc.parallelize(matrix)
         path = self.logitfitL1.fit(matrix_RDD, self.lambda_grid, pyspark=True)
 
         obs = matrix[:, :-2]
