@@ -24,8 +24,8 @@ install:
     - export PATH=$HOME/py/bin:$PATH
     - pip install --upgrade unittest2 codecov
 script:
-    - ./python/run-tests
-    - "pep8 --ignore=E402 ./python"
+    - ./run-tests
+    - "pep8 --ignore=E402 ./logistic_regression_L1"
 after_success:
     - codecov
 notifications:
