@@ -11,15 +11,15 @@ before_install:
     - conda install --yes -n condaenv pip
     - source activate condaenv
 install:
-    # Download spark 1.4.1
-    - wget http://d3kbcqa49mib13.cloudfront.net/spark-1.4.1-bin-hadoop2.4.tgz || wget http://www.us.apache.org/dist/spark/spark-1.4.1/spark-1.4.1-bin-hadoop2.4.tgz || wget http://download.nextag.com/apache/spark/spark-1.4.1/spark-1.4.1-bin-hadoop2.4.tgz
-    - tar -xvf spark-1.4.1-bin-hadoop2.4.tgz
-    - export SPARK_HOME="$HOME/spark-1.4.1-bin-hadoop2.4"
-    - export PYTHONPATH="$SPARK_HOME/python:$PYTHONPATH"
+    # Download spark 1.5.2
+    - wget http://d3kbcqa49mib13.cloudfront.net/spark-1.5.2-bin-hadoop2.6.tgz || wget http://www.us.apache.org/dist/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz || wget http://download.nextag.com/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz
+    - tar -xvf spark-1.5.2-bin-hadoop2.6.tgz
     - conda install --yes numpy scipy
     - conda install --yes scikit-learn
     - pip install coverage nose-cov
 script:
+    - export SPARK_HOME="$HOME/spark-1.5.2-bin-hadoop2.6"
+    - export PYTHONPATH="$SPARK_HOME/python:$PYTHONPATH"
     - ./run-tests
     - pep8 --ignore=E402 ./logistic_regression_L1
 after_success:
