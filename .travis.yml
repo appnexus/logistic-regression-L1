@@ -2,33 +2,22 @@ language: python
 python:
     - "2.7"
 before_install:
-    - export PATH=$HOME/.local/bin:$PATH
-    - pip install --upgrade pip
-    - pip install codecov coverage
+    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+    - chmod +x miniconda.sh
+    - ./miniconda.sh -b
+    - export PATH=/home/travis/miniconda/bin:$PATH
+    - conda update --yes conda
+    - conda install --yes codecov coverage
 install:
     # Download spark 1.4.1
     - wget http://d3kbcqa49mib13.cloudfront.net/spark-1.4.1-bin-hadoop2.4.tgz || wget http://www.us.apache.org/dist/spark/spark-1.4.1/spark-1.4.1-bin-hadoop2.4.tgz || wget http://download.nextag.com/apache/spark/spark-1.4.1/spark-1.4.1-bin-hadoop2.4.tgz
     - tar -xvf spark-1.4.1-bin-hadoop2.4.tgz
     - export SPARK_HOME="$HOME/spark-1.4.1-bin-hadoop2.4"
     - export PYTHONPATH="$SPARK_HOME/python:$PYTHONPATH"
-    # Install Python deps.
-    # The conda installation steps here are based on http://conda.pydata.org/docs/travis.html
-    - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-    - bash miniconda.sh -b -p $HOME/miniconda
-    - export PATH="$HOME/miniconda/bin:$PATH"
-    - hash -r
-    - conda config --set always_yes yes --set changeps1 no
-    - conda update -q conda
-    # Useful for debugging any issues with conda
-    - conda info -a
-    - deps='pip requests nose sphinx pep8 coverage'
-    - conda create -p $HOME/py --yes $deps "python=2.7"
-    - export PATH=$HOME/py/bin:$PATH
-    - pip install --upgrade unittest2 codecov
-    - pip install -r requirements.txt
+    - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy sklearn
 script:
     - ./run-tests
-    - "pep8 --ignore=E402 ./logistic_regression_L1"
+    - pep8 --ignore=E402 ./logistic_regression_L1
 after_success:
     - codecov
 notifications:
