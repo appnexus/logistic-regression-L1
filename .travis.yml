@@ -18,6 +18,7 @@ install:
     - export PYTHONPATH="$SPARK_HOME/python:$PYTHONPATH"
     - conda install --yes numpy scipy
     - conda install --yes scikit-learn
+    - pip install coverage nose-cov
 script:
     - ./run-tests
     - pep8 --ignore=E402 ./logistic_regression_L1
