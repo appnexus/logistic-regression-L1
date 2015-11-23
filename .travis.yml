@@ -16,8 +16,8 @@ install:
     - tar -xvf spark-1.4.1-bin-hadoop2.4.tgz
     - export SPARK_HOME="$HOME/spark-1.4.1-bin-hadoop2.4"
     - export PYTHONPATH="$SPARK_HOME/python:$PYTHONPATH"
-    - conda install --yes python=$TRAVIS_PYTHON_VERSION numpy scipy
-    - conda install --yes python=$TRAVIS_PYTHON_VERSION scikit-learn
+    - conda install --yes numpy scipy
+    - conda install --yes scikit-learn
 script:
     - ./run-tests
     - pep8 --ignore=E402 ./logistic_regression_L1
