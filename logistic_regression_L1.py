@@ -126,7 +126,6 @@ class LogisticRegressionL1():
 
         return (xj ** 2).dot(new_weights)
 
-
     def __get_c_precalculated_terms(self, matrix, old_betas):
         """
         Generates pre-calculated c terms that are used for each lambda
@@ -280,8 +279,11 @@ class LogisticRegressionL1():
                 cj = self.__calc_cj(c1, c2_matrix, new_betas, j)
                 new_betas[j] = self.__calc_betaj(a_array[j], cj, lam, j)
 
-            beta_pct_diff = (max(np.abs(new_betas - old_betas)) * 1. /
-                                np.sum(np.abs(new_betas)))
+            if np.sum(np.abs(new_betas)) == 0:
+                break
+            else:
+                beta_pct_diff = (max(np.abs(new_betas - old_betas)) * 1. /
+                                    np.sum(np.abs(new_betas)))
             old_betas = copy.deepcopy(new_betas)
 
         return new_betas

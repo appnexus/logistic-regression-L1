@@ -1,3 +1,5 @@
 *.pyc
 *.ipynb
+sklearn_l1_path_graphs.ipynb
+sklearn_l1_path_graphs.py
 tests/.cache/*
