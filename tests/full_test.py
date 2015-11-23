@@ -2,7 +2,7 @@
 Unit tests
 """
 
-import unittest2
+import unittest
 import numpy as np
 from logistic_regression_L1 import LogisticRegressionL1
 from sklearn.linear_model.logistic import LogisticRegression
@@ -87,7 +87,7 @@ def explode_matrix(data):
 
     return new_matrix
 
-class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
+class LogisticRegressionL1NumPyTestCase(unittest.TestCase):
     def setUp(self):
         super(LogisticRegressionL1NumPyTestCase, self).setUp()
         self.logitfitL1 = LogisticRegressionL1()
@@ -161,7 +161,7 @@ class LogisticRegressionL1NumPyTestCase(unittest2.TestCase):
         skbetas = np.append(clf.intercept_[0], clf.coef_)
         np.testing.assert_almost_equal(skbetas, logitfitL1.coef_, 1)
 
-class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
+class LogisticRegressionL1SparkTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         class_name = cls.__name__
@@ -227,4 +227,4 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
 
 
 if __name__ == "__main__":
-    unittest2.main()
+    unittest.main()
