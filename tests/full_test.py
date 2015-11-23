@@ -11,8 +11,6 @@ from sklearn.datasets import make_classification
 from pyspark import SparkContext
 from pyspark import SparkConf
 
-sc = SparkContext("local[4]")
-
 def prob(X, betas):
     """
     Calculate probability given beta coefficient (sigmoid function)
@@ -167,7 +165,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
     @classmethod
     def setUpClass(cls):
         class_name = cls.__name__
-        cls.sc = SparkContext(cls.getMaster(), appName=class_name)
+        cls.sc = SparkContext("local[4]", appName=class_name)
 
     @classmethod
     def tearDownClass(cls):
@@ -177,7 +175,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         cls.sc._jvm.System.clearProperty("spark.driver.port")
 
     def setUp(self):
-        super(LogisticRegressionL1TestCase, self).setUp()
+        super(LogisticRegressionL1SparkTestCase, self).setUp()
         self.logitfitL1 = LogisticRegressionL1()
         self.lambda_grid = np.exp(-1*np.linspace(1, 17, 200))
 
@@ -188,7 +186,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         betas = [5., 0.3, 1.]
         matrix = create_random_observations(100, 2, betas)
 
-        matrix_RDD = sc.parallelize(matrix)
+        matrix_RDD = self.sc.parallelize(matrix)
         path = self.logitfitL1.fit(matrix_RDD, self.lambda_grid, pyspark=True)
         np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
 
@@ -196,7 +194,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         # Test predict function
         betas = [5., 0.3, 1.]
         matrix = create_random_observations(100, 2, betas)
-        matrix_RDD = sc.parallelize(matrix)
+        matrix_RDD = self.sc.parallelize(matrix)
         path = self.logitfitL1.fit(matrix_RDD, self.lambda_grid, pyspark=True)
 
         obs = matrix[:, :-2]
@@ -207,7 +205,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         # Test lists of lists as input
         betas = [5., 0.3, 1.]
         matrix = create_random_observations(100, 2, betas)
-        matrix_RDD_lol = sc.parallelize([list(i) for i in matrix])
+        matrix_RDD_lol = self.sc.parallelize([list(i) for i in matrix])
         self.logitfitL1.fit(matrix_RDD_lol, self.lambda_grid, pyspark=True)
         np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
 
@@ -215,7 +213,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         # Test list of np.arrays as input
         betas = [5., 0.3, 1.]
         matrix = create_random_observations(100, 2, betas)
-        matrix_RDD_mol = sc.parallelize(list(matrix))
+        matrix_RDD_mol = self.sc.parallelize(list(matrix))
         self.logitfitL1.fit(matrix_RDD_mol, self.lambda_grid, pyspark=True)
         np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 2)
 
@@ -223,7 +221,7 @@ class LogisticRegressionL1SparkTestCase(unittest2.TestCase):
         # Test negative and zero betas
         betas = [.3, -8, 0, 1.]
         matrix = create_random_observations(100, 3, betas)
-        matrix_RDD = sc.parallelize(matrix)
+        matrix_RDD = self.sc.parallelize(matrix)
         self.logitfitL1.fit(matrix_RDD, self.lambda_grid, pyspark=True)
         np.testing.assert_almost_equal(np.array(betas), self.logitfitL1.coef_, 3)
 
