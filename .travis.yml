@@ -11,12 +11,13 @@ install:
     # Download spark 1.5.2
     - wget http://d3kbcqa49mib13.cloudfront.net/spark-1.5.2-bin-hadoop2.6.tgz || wget http://www.us.apache.org/dist/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz || wget http://download.nextag.com/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz
     - tar -xvf spark-1.5.2-bin-hadoop2.6.tgz
-    - export SPARK_HOME="/home/travis/spark-1.5.2-bin-hadoop2.6"
+    - export SPARK_HOME=`pwd`/spark-1.5.2-bin-hadoop2.6
     - conda update --yes conda
     - conda create -n testenv --yes pip nose coverage setuptools numpy scipy scikit-learn python=$TRAVIS_PYTHON_VERSION
     - source activate testenv
     - pip install py4j
-    - export PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH"
+    - export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
+    - ls $SPARK_HOME/python
     # for debugging...
     - which python
     - conda info
@@ -25,8 +26,6 @@ install:
     - python setup.py install
     - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
 script:
-    - export PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH"
-    - ls /home/travis/spark-1.5.2-bin-hadoop2.6/python
     - nosetests tests --logging-level=INFO --detailed-errors --verbosity=5 --with-coverage --cover-branches --cover-xml --cover-html --cover-html-dir=./htmlcov --cover-package=logistic_regression_L1 --traverse-namespace
 after_success:
     - codecov
