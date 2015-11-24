@@ -4,12 +4,13 @@ Unit tests
 
 import unittest
 import numpy as np
-from logistic_regression_L1 import LogisticRegressionL1
 from sklearn.linear_model.logistic import LogisticRegression
 from sklearn.svm import l1_min_c
 from sklearn.datasets import make_classification
 from pyspark import SparkContext
-from pyspark import SparkConf
+
+from logistic_regression_L1 import LogisticRegressionL1
+
 
 def prob(X, betas):
     """
@@ -50,7 +51,7 @@ def create_random_observations(num_obs, num_feat, betas):
     for i in xrange(num_feat):
         matrix[:,i] = np.random.randint(0, 100, size=num_obs) * 1.0 / 100
 
-    m = np.random.randint(500, 1000, size = num_obs)
+    m = np.random.randint(500, 1000, size=num_obs)
 
     X = matrix[:, :-2]
     P = prob(X, np.array(betas))
@@ -60,6 +61,7 @@ def create_random_observations(num_obs, num_feat, betas):
     matrix[:, -1] = y
 
     return matrix
+
 
 def explode_matrix(data):
 
@@ -86,6 +88,7 @@ def explode_matrix(data):
     new_matrix[:, -2] = np.ones(int(m.sum()))
 
     return new_matrix
+
 
 class LogisticRegressionL1NumPyTestCase(unittest.TestCase):
     def setUp(self):
@@ -144,7 +147,7 @@ class LogisticRegressionL1NumPyTestCase(unittest.TestCase):
 
         # Betas to test
         logitfitL1 = LogisticRegressionL1()
-        lambda_grid = np.exp(-1*np.linspace(1,17,200))
+        lambda_grid = np.exp(-1 * np.linspace(1, 17, 200))
         path = logitfitL1.fit(matrix, lambda_grid)
 
         # Sklearn
@@ -160,6 +163,7 @@ class LogisticRegressionL1NumPyTestCase(unittest.TestCase):
 
         skbetas = np.append(clf.intercept_[0], clf.coef_)
         np.testing.assert_almost_equal(skbetas, logitfitL1.coef_, 1)
+
 
 class LogisticRegressionL1SparkTestCase(unittest.TestCase):
     @classmethod
