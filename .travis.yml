@@ -18,18 +18,7 @@ install:
     - conda install --yes scikit-learn
     - pip install coverage nose-cov
 script:
-    - |
-    nosetests tests \
-        --logging-level=INFO \
-        --detailed-errors \
-        --verbosity=5 \
-        --with-coverage \
-        --cover-branches \
-        --cover-xml \
-        --cover-html \
-        --cover-html-dir=./htmlcov \
-        --cover-package=logistic_regression_L1 \
-        --traverse-namespace
+    - nosetests tests --logging-level=INFO --detailed-errors --verbosity=5 --with-coverage --cover-branches --cover-xml --cover-html --cover-html-dir=./htmlcov --cover-package=logistic_regression_L1 --traverse-namespace
     - pep8 --ignore=E402 ./logistic_regression_L1
 after_success:
     - codecov
