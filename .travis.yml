@@ -16,7 +16,7 @@ install:
     - tar -xvf spark-1.5.2-bin-hadoop2.6.tgz
     - conda install --yes numpy scipy
     - conda install --yes scikit-learn
-    - pip install coverage nose-cov
+    - pip install coverage nose-cov py4j
 script:
     - nosetests tests --logging-level=INFO --detailed-errors --verbosity=5 --with-coverage --cover-branches --cover-xml --cover-html --cover-html-dir=./htmlcov --cover-package=logistic_regression_L1 --traverse-namespace
     - pep8 --ignore=E402 ./logistic_regression_L1
