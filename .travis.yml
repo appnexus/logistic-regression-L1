@@ -19,7 +19,6 @@ install:
     - export PYTHONPATH=$SPARK_HOME/python:$PYTHONPATH
     - ls $SPARK_HOME/python
     - python setup.py install
-    - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
 script:
     - nosetests tests --nologcapture --logging-level=WARN --detailed-errors --verbosity=2 --with-coverage --cover-branches --cover-xml --cover-html --cover-html-dir=./htmlcov --cover-package=logistic_regression_L1 --traverse-namespace
 after_success:
