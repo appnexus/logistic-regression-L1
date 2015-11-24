@@ -1,5 +1,8 @@
 Logistic Regression with L1 Penalty
 ======================================
+[![Build Status](https://travis-ci.org/appnexus/sicksync.svg?branch=master)](https://travis-ci.org/appnexus/logistic-regression-L1)
+[![Code Climate](https://codeclimate.com/github/appnexus/sicksync/badges/gpa.svg)](https://codeclimate.com/github/appnexus/logistic-regression-L1)
+
 This class implements L1 (Lasso) regularization on Logistic Regression
 using coordinate descent to achieve sparse solutions.
 It allows for both in-memory inputs and data that lives in a PySpark RDD.
