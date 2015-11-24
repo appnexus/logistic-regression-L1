@@ -170,6 +170,9 @@ class LogisticRegressionL1SparkTestCase(unittest.TestCase):
     def setUpClass(cls):
         class_name = cls.__name__
         cls.sc = SparkContext("local[4]", appName=class_name)
+        logger = cls.sc._jvm.org.apache.log4j
+        logger.LogManager.getLogger("org"). setLevel(logger.Level.ERROR)
+        logger.LogManager.getLogger("akka").setLevel(logger.Level.ERROR)
 
     @classmethod
     def tearDownClass(cls):
