@@ -2,24 +2,29 @@ language: python
 python:
     - 2.7
 env:
-    - SPARK_HOME="/home/travis/spark-1.5.2-bin-hadoop2.6" PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH" PATH="/home/travis/miniconda2/bin:$PATH"
 before_install:
-    - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+    - wget https://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
     - chmod +x miniconda.sh
-    - ./miniconda.sh -b
-    - conda update --yes conda
-    - conda create --yes -n condaenv python=$TRAVIS_PYTHON_VERSION
-    - source activate condaenv
+    - ./miniconda.sh -b -p /home/travis/mc
+    - export PATH=/home/travis/mc/bin:$PATH
 install:
     # Download spark 1.5.2
     - wget http://d3kbcqa49mib13.cloudfront.net/spark-1.5.2-bin-hadoop2.6.tgz || wget http://www.us.apache.org/dist/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz || wget http://download.nextag.com/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz
     - tar -xvf spark-1.5.2-bin-hadoop2.6.tgz
-    - conda install --yes numpy scipy
-    - conda install --yes scikit-learn
-    - pip install coverage nose-cov py4j
+    - export SPARK_HOME="/home/travis/spark-1.5.2-bin-hadoop2.6"
+    - conda update --yes conda
+    - conda create -n testenv --yes pip nose coverage setuptools numpy scipy scikit-learn python=$TRAVIS_PYTHON_VERSION
+    - source activate testenv
+    - pip install py4j
+    - export PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH"
+    # for debugging...
+    - which python
+    - conda info
+    - conda list
+    - pip freeze
+    - python setup.py install
 script:
     - nosetests tests --logging-level=INFO --detailed-errors --verbosity=5 --with-coverage --cover-branches --cover-xml --cover-html --cover-html-dir=./htmlcov --cover-package=logistic_regression_L1 --traverse-namespace
-    - pep8 --ignore=E402 ./logistic_regression_L1
 after_success:
     - codecov
 notifications:
