@@ -23,7 +23,10 @@ install:
     - conda list
     - pip freeze
     - python setup.py install
+    - sudo rm -rf /dev/shm && sudo ln -s /run/shm /dev/shm
 script:
+    - export PYTHONPATH="/home/travis/spark-1.5.2-bin-hadoop2.6/python:$PYTHONPATH"
+    - ls /home/travis/spark-1.5.2-bin-hadoop2.6/python
     - nosetests tests --logging-level=INFO --detailed-errors --verbosity=5 --with-coverage --cover-branches --cover-xml --cover-html --cover-html-dir=./htmlcov --cover-package=logistic_regression_L1 --traverse-namespace
 after_success:
     - codecov
