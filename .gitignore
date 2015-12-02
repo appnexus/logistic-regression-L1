@@ -6,3 +6,4 @@ tests/.cache/*
 .coverage
 coverage.xml
 htmlcov
+.idea
