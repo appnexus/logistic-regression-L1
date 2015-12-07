@@ -51,7 +51,8 @@ class LogisticRegressionL1():
 
         Params
         ------
-        matrix : matrix with bias term, X, weights, and responses (y)
+        X : 2d numpy array of observations, shape [n_samples, n_features + 1]
+            Bias factor is included
         betas : array of coefficients, includes bias
 
         Returns
