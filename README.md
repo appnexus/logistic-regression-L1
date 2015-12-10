@@ -21,8 +21,8 @@ where the probabilities are defined by the logistic function:
 
 The ith index denotes a set of observations with the same x_i, but with
 m_i occurrences of this observation, and y_i trials that result in a "success."
-The objective is to find the optimal beta cofficients to minimize the
-negative log likelihood.
+There are n observations. The objective is to find the optimal beta cofficients
+to minimize the negative log likelihood.
 
 The technique that is utilized is described in section 3 of ["Regularization Paths for Generalized Linear Models via Coordinate Descent"](http://web.stanford.edu/~hastie/Papers/glmnet.pdf).
 
