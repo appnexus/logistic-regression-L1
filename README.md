@@ -11,7 +11,8 @@ scikit-learn is sufficient.
 
 
 ### Mathematical Formulation
-This method is formulated as the minimization of the concave function f.
+This method is formulated as the maximization of the concave log
+likelihood function.
 We can write this as the optimization problem like so:
 ![Max Eqn] (./images/logit_max.gif)
 
