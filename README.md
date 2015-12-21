@@ -14,6 +14,7 @@ scikit-learn is sufficient.
 This method is formulated as the maximization of the concave log
 likelihood function.
 We can write this as the optimization problem like so:
+
 ![Max Eqn] (./images/logit_max.gif)
 
 where the probabilities are defined by the logistic function:
